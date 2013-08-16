@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+
+  "name": "Phishtracks Scraper",
+  "description": "This extension allows for Backbone model scraping for PhishTracks.com.",
+  "version": "0.1",
+
+  "permissions": [
+    "http://*.phishtracks.com/"
+  ],
+
+  "browser_action": {
+    "default_icon": {
+      "19": "icon.png"
+    },
+    "default_title": "PhishTracks Scraper",
+    "default_popup": "popup.html"
+  },
+
+  "content_scripts": [
+  {
+    "matches": ["http://*.phishtracks.com/*"],
+    "js": ["jquery.js", "myscript.js"]
+  }
