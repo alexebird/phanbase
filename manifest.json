@@ -1,24 +1,25 @@
 {
   "manifest_version": 2,
-
-  "name": "Phishtracks Scraper",
-  "description": "This extension allows for Backbone model scraping for PhishTracks.com.",
+  "name": "PhishTracks Buddy ",
+  "description": "friendly",
   "version": "0.1",
 
-  "permissions": [
-    "http://*.phishtracks.com/"
-  ],
-
-  "browser_action": {
-    "default_icon": {
-      "19": "icon.png"
-    },
-    "default_title": "PhishTracks Scraper",
-    "default_popup": "popup.html"
+  "background": {
+    "scripts": ["jquery-2.1.1.min.js", "phishtracks-stats-0.1.0.js", "bg.js"]
   },
 
+  "permissions": [
+    "webRequest",
+    "http://www.phishtracks.com/",
+    "https://www.phishtrackstats.com/"
+  ],
+
   "content_scripts": [
-  {
-    "matches": ["http://*.phishtracks.com/*"],
-    "js": ["jquery.js", "myscript.js"]
-  }
+    {
+      "run_at": "document_end",
+      "matches": ["http://www.phishtracks.com/*"],
+      "js": ["jquery-2.1.1.min.js", "content.js"],
+      "css": ["styles.css"]
+    }
+  ]
+}

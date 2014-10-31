@@ -1,0 +1,16 @@
+.pt-buddy {
+  float: left;
+  margin-left: 1em;
+  position: relative;
+  top: 22px;
+  height: 10px;
+  width: 100px;
+  background-color: red;
+}
+
+.pt-buddy > div {
+  background-color: white;
+  width: 50%;
+  height: 100%;
+  position: relative;
+}
