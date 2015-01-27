@@ -1,4 +1,3 @@
-
 function ptElforSlug(slug) {
   return $('.songs .songTitle > a[href$="/' + slug + '"]').first();
 }

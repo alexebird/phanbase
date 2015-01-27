@@ -32,9 +32,9 @@ chrome.webRequest.onCompleted.addListener(function(details) {
 { urls: ["http://www.phishtracks.com/*"] },
 []);
 
-$(function() {
-  console.log('freddy');
-});
+//$(function() {
+  //console.log('freddy');
+//});
 
 PhishTracksStats.setup({
   testMode: true,
@@ -42,10 +42,10 @@ PhishTracksStats.setup({
   urlBase: secrets.urlBase || 'https://www.phishtrackstats.com'
 });
 
-function buildHeatmapQuery(entity, filter, timeframe) {
+function buildHeatmapQuery(entity, filter) {
   return {
     'entity':    entity,
-    'timeframe': timeframe || 'all_time',
+    'timeframe': 'auto',
     'timezone':  (new Date()).getTimezoneOffset() / -60,
     'filter':    filter
   };
@@ -55,4 +55,3 @@ function getShowHeatmap(showDate, callback) {
   var query = buildHeatmapQuery('show', showDate);
   PhishTracksStats.getHeatmap(query, callback);
 }
-
