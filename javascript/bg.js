@@ -1,8 +1,18 @@
-//chrome.runtime.onMessage.addListener(function(msg, sender, sendResp) {
-  //console.log('got message');
-  //console.log(msg);
-  //console.log(sender);
-//});
+var __data = null;
+
+chrome.runtime.onMessage.addListener(function(msg, sender, sendResp) {
+  if (__data == null) {
+    console.debug('aww fuck');
+  }
+
+  if (msg == 'ready') {
+    console.log('guacamole: ' + msg);
+
+    chrome.tabs.query({ url: 'http://*.phishtracks.com/*'}, function(tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, __data);
+    });
+  }
+});
 
 chrome.webRequest.onCompleted.addListener(function(details) {
   var url = details.url;
@@ -15,24 +25,22 @@ chrome.webRequest.onCompleted.addListener(function(details) {
   }
   else if (m = url.match(/shows\/(\d{4}-\d{2}-\d{2})$/)) {
     getShowHeatmap(m[1], function(data) {
-      console.log('sending message');
-      console.log(data);
-
-      //chrome.tabs.query({ url: '<all_urls>'}, function(tabs) {
-      chrome.tabs.query({ url: 'http://*.phishtracks.com/*'}, function(tabs) {
-        console.debug('tabs');
-        console.debug(tabs);
-        chrome.tabs.sendMessage(tabs[0].id, data);
-      });
+      __data = data;
     });
   }
 },
-{urls: ["http://www.phishtracks.com/*"]},
+{ urls: ["http://www.phishtracks.com/*"] },
 []);
 
-var apiBasicAuth = 'xyz';
-var urlBase      = 'https://www.phishtrackstats.com';
-PhishTracksStats.setup({ testMode: false, auth: apiBasicAuth, urlBase: urlBase });
+$(function() {
+  console.log('freddy');
+});
+
+PhishTracksStats.setup({
+  testMode: true,
+  auth: secrets.apiBasicAuth,
+  urlBase: secrets.urlBase || 'https://www.phishtrackstats.com'
+});
 
 function buildHeatmapQuery(entity, filter, timeframe) {
   return {

@@ -5,11 +5,17 @@
   "version": "0.1",
 
   "background": {
-    "scripts": ["jquery-2.1.1.min.js", "phishtracks-stats-0.1.0.js", "bg.js"]
+    "scripts": [
+      "javascript/jquery-2.1.1.min.js",
+      "javascript/phishtracks-stats-0.1.0.js",
+      "secrets.js",
+      "javascript/bg.js"
+    ]
   },
 
   "permissions": [
     "webRequest",
+    "http://phish.in/",
     "http://www.phishtracks.com/",
     "https://www.phishtrackstats.com/"
   ],
@@ -18,7 +24,10 @@
     {
       "run_at": "document_end",
       "matches": ["http://www.phishtracks.com/*"],
-      "js": ["jquery-2.1.1.min.js", "content.js"],
+      "js": [
+        "javascript/jquery-2.1.1.min.js",
+        "javascript/content.js"
+      ],
       "css": ["styles.css"]
     }
   ]
