@@ -1,27 +1,49 @@
-function ptElforSlug(slug) {
-  return $('.songs .songTitle > a[href$="/' + slug + '"]').first();
-}
+var entityFns = {
+  show: function (heatmap) {
+    console.debug(heatmap);
 
-function setBar(barEl, val) {
-  $(barEl).closest('li').find('.pt-buddy > div').css('height', '' + val + '%');
-}
+    $('.songs > li:not(.sectionTitle) .pt-buddy').remove();
+    $('.songs > li:not(.sectionTitle) > .songInfo').before('<div class="pt-buddy"><div></div></div>');
 
-chrome.runtime.onMessage.addListener(function(msg, sender, sendResp) {
-  console.log('got message');
-  console.log(msg.heatmap);
-  $('.songs > li:not(.sectionTitle) .pt-buddy').remove();
-  $('.songs > li:not(.sectionTitle) > .songInfo').before('<div class="pt-buddy"><div></div></div>');
-  $.each(msg.heatmap, function(i) {
-    var slug = i;
-    var val = (1 - parseFloat(msg.heatmap[i].value)) * 100.0;
-    console.log('' + i + ' -> ' + val);
-    var el = ptElforSlug(i);
-    console.log(el);
-    setBar(el, val)
-  });
-});
+    $.each(heatmap, function(slug) {
+      var val = normalize(heatmap[slug].value);
+      //console.log('' + i + ' -> ' + val);
+      $('.songs .songTitle > a[href$="/' + slug + '"]')
+        .first()
+        .closest('li')
+        .find('.pt-buddy > div')
+        .css('height', '' + val + '%');
+    });
+  },
+  year: function(heatmap) {
+    console.debug(heatmap);
+
+    $('.showsByYear > li > a > .pt-buddy').remove();
+    $('.showsByYear > li > a > span').before('<div class="pt-buddy"><div></div></div>');
+
+    $.each(heatmap, function(slug) {
+      var val = normalize(heatmap[slug].value);
+      $('.showsByYear > li > a[href$="/' + slug + '"]')
+        .first()
+        .closest('li')
+        .find('.pt-buddy > div')
+        .css('height', '' + val + '%');
+    });
+  },
+  years: function(heatmap) {
+
+  }
+};
+
+function normalize(val) {
+  return (1 - parseFloat(val)) * 100.0;
+}
 
 $(function() {
-  console.log('ready');
-  chrome.runtime.sendMessage("ready");
+  console.debug('ready');
+  chrome.runtime.sendMessage({ status: 'ready' });
+});
+
+chrome.runtime.onMessage.addListener(function(msg, sender, sendResp) {
+  entityFns[msg.entity](msg.heatmap);
 });

@@ -1,20 +1,21 @@
 .pt-buddy {
-  float: left ;
-  position: relative;
-  top: -9px;
-  left: -9px;
-  height: 75px;
-  width: 10px;
   background-color: #00805F;
+  float: left ;
+  width: 10px;
+  height: auto;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  bottom: 5px;
 }
 
 .pt-buddy > div {
   background-color: rgb(204, 241, 230);
   width: 100%;
-  height: 0%;
+  height: 100%;
   position: relative;
 }
 
-.songInfo {
+.songInfo, .showsByYear > li > a > span {
   margin-left: 0.5em;
 }
