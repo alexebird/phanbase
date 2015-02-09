@@ -22,7 +22,7 @@
 
   "content_scripts": [
     {
-      "run_at": "document_end",
+      "run_at": "document_idle",
       "matches": ["http://www.phishtracks.com/*"],
       "js": [
         "javascript/jquery-2.1.1.min.js",

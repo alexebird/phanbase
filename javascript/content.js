@@ -39,11 +39,30 @@ function normalize(val) {
   return (1 - parseFloat(val)) * 100.0;
 }
 
-$(function() {
+$(document).ready(function() {
   console.debug('ready');
-  chrome.runtime.sendMessage({ status: 'ready' });
+  //chrome.runtime.sendMessage({ status: 'ready' });
 });
 
-chrome.runtime.onMessage.addListener(function(msg, sender, sendResp) {
-  entityFns[msg.entity](msg.heatmap);
+//$(window).load(function() {
+  //console.debug('loaded');
+  //chrome.runtime.sendMessage({ status: 'loaded' });
+//});
+
+//chrome.runtime.onMessage.addListener(function(msg, sender, sendResp) {
+  //if (msg.kind == 'ping') {
+    //chrome.runtime.sendMessage({ status: 'pong', data: (document.readyState === 'complete') });
+  //}
+  //else if (msg.kind == 'heatmap') {
+    //entityFns[msg.data.entity](msg.heatmap);
+  //}
+//});
+
+var port = chrome.runtime.connect({name: "knockknock"});
+port.postMessage({joke: "Knock knock"});
+port.onMessage.addListener(function(msg) {
+  if (msg.question == "Who's there?")
+    port.postMessage({answer: "Madame"});
+  else if (msg.question == "Madame who?")
+    port.postMessage({answer: "Madame... Bovary"});
 });
