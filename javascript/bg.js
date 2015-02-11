@@ -78,9 +78,9 @@ function heatmapOptionsForUrl(url) {
   }
 }
 
-//chrome.webRequest.onCompleted.addListener(function(details) {
+chrome.webRequest.onCompleted.addListener(function(details) {
+  console.debug('web request: ' + details.url);
   ////PhishTracksBuddy.ContentScript.ready = false;
-  //console.log(details.url);
   //var opts = heatmapOptionsForUrl(details.url);
   //if (opts) {
     //getHeatmap(opts, function(data) {
@@ -97,9 +97,9 @@ function heatmapOptionsForUrl(url) {
   //else {
     //console.error('path didnt match anything');
   //}
-//},
-//{ urls: [pt('*')] },
-//[]);
+},
+{ urls: [pt('*')] },
+[]);
 
 //$(function() {
   //console.log('freddy');
