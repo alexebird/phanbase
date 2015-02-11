@@ -35,12 +35,12 @@ var PhishTracksBuddy = {
   ////}
 //});
 
-function sendHeatmap(data) {
-  chrome.tabs.query({ url: pt('*')}, function(tabs) {
-    console.debug('sending heatmap');
-    chrome.tabs.sendMessage(tabs[0].id, {kind: 'heatmap', data: data});
-  });
-}
+//function sendHeatmap(data) {
+  //chrome.tabs.query({ url: pt('*')}, function(tabs) {
+    //console.debug('sending heatmap');
+    //chrome.tabs.sendMessage(tabs[0].id, {kind: 'heatmap', data: data});
+  //});
+//}
 
 var PT = 'http://www.phishtracks.com';
 
@@ -121,13 +121,31 @@ function getHeatmap(options, callback) {
 }
 
 chrome.runtime.onConnect.addListener(function(port) {
-  console.assert(port.name == "knockknock");
+  console.assert(port.name == "the_port");
+
   port.onMessage.addListener(function(msg) {
-    if (msg.joke == "Knock knock")
-      port.postMessage({question: "Who's there?"});
-    else if (msg.answer == "Madame")
-      port.postMessage({question: "Madame who?"});
-    else if (msg.answer == "Madame... Bovary")
-      port.postMessage({question: "I don't get it."});
+    console.debug(msg);
+    if (msg.status == "ready") {
+      var opts = heatmapOptionsForUrl(msg.url);
+      getHeatmap(opts, function(data) {
+        //if (PhishTracksBuddy.ContentScript.ready) {
+          console.debug('CS is ready right away');
+          getHeatmap(opts, function(data) {
+            port.postMessage(data);
+          });
+        //}
+        //else {
+          //console.debug('CS not ready, storing heatmap for later');
+          //PhishTracksBuddy.lastHeatmap = data;
+        //}
+      });
+    }
+      //port.postMessage({question: "Who's there?"});
+    //else if (msg.answer == "Madame")
+      //port.postMessage({question: "Madame who?"});
+    //else if (msg.answer == "Madame... Bovary") {
+      //console.debug('wtf');
+      //port.postMessage({question: "I don't get it."});
+    //}
   });
 });

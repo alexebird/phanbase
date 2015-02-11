@@ -1,3 +1,5 @@
+var port = chrome.runtime.connect({name: "the_port"});
+
 var entityFns = {
   show: function (heatmap) {
     console.debug(heatmap);
@@ -42,6 +44,7 @@ function normalize(val) {
 $(document).ready(function() {
   console.debug('ready');
   //chrome.runtime.sendMessage({ status: 'ready' });
+  port.postMessage({status: 'ready', url: window.location.pathname});
 });
 
 //$(window).load(function() {
@@ -58,11 +61,12 @@ $(document).ready(function() {
   //}
 //});
 
-var port = chrome.runtime.connect({name: "knockknock"});
-port.postMessage({joke: "Knock knock"});
-port.onMessage.addListener(function(msg) {
-  if (msg.question == "Who's there?")
-    port.postMessage({answer: "Madame"});
-  else if (msg.question == "Madame who?")
-    port.postMessage({answer: "Madame... Bovary"});
+//port.postMessage({joke: "Knock knock"});
+port.onMessage.addListener(function(data) {
+  console.debug(data);
+  entityFns[data.entity](data.heatmap);
+  //if (msg.question == "Who's there?")
+    //port.postMessage({answer: "Madame"});
+  //else if (msg.question == "Madame who?")
+    //port.postMessage({answer: "Madame... Bovary"});
 });
