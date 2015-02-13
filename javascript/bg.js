@@ -1,51 +1,31 @@
 PhishTracksStats.setup({
   testMode: true,
   auth: secrets.apiBasicAuth,
-  urlBase: secrets.urlBase || 'https://www.phishtrackstats.com'
+  //urlBase: secrets.urlBase || 'https://www.phishtrackstats.com'
+  urlBase: 'https://www.phishtrackstats.com'
 });
 
-var PhishTracksBuddy = {
-  lastHeatmap: null,
-
-  ContentScript: {
-    ready: false
-  }
-};
-
 //var PhishTracksBuddy = {
-  //cache: {}
-//};
+  //lastHeatmap: null,
 
-//chrome.runtime.onMessage.addListener(function(msg, sender, sendResp) {
-  ////if (PhishTracksBuddy.cache['__data'] == null) {
-    ////console.debug('');
-  ////}
-
-  //if (msg.status == 'ready') {
-    //console.debug('CS ready');
-    //PhishTracksBuddy.ContentScript.ready = true;
-    //if (PhishTracksBuddy.lastHeatmap) {
-      //console.debug('already have heatmap');
-      //sendHeatmap(PhishTracksBuddy.lastHeatmap);
-      //PhishTracksBuddy.lastHeatmap = null;
-    //}
+  //ContentScript: {
+    //ready: false
   //}
-  ////else {
-    ////console.error(msg.status);
-  ////}
-//});
-
-//function sendHeatmap(data) {
-  //chrome.tabs.query({ url: pt('*')}, function(tabs) {
-    //console.debug('sending heatmap');
-    //chrome.tabs.sendMessage(tabs[0].id, {kind: 'heatmap', data: data});
-  //});
-//}
+//};
 
 var PT = 'http://www.phishtracks.com';
 
 function pt(path) {
   return  PT + '/' + path;
+}
+
+//chrome.runtime.onMessage.addListener(function(msg, sender, sendResp) {
+//});
+
+function sendMessageToContentScript(msg) {
+  chrome.tabs.query({ url: pt('*')}, function(tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, msg);
+  });
 }
 
 function matchPt(url, re) {
@@ -78,40 +58,52 @@ function heatmapOptionsForUrl(url) {
   }
 }
 
-chrome.webRequest.onCompleted.addListener(function(details) {
-  console.debug('web request: ' + details.url);
-  ////PhishTracksBuddy.ContentScript.ready = false;
-  //var opts = heatmapOptionsForUrl(details.url);
-  //if (opts) {
-    //getHeatmap(opts, function(data) {
-      //if (PhishTracksBuddy.ContentScript.ready) {
-        //console.debug('CS is ready right away');
-        //sendHeatmap(data);
-      //}
-      //else {
-        //console.debug('CS not ready, storing heatmap for later');
-        //PhishTracksBuddy.lastHeatmap = data;
-      //}
-    //});
-  //}
-  //else {
-    //console.error('path didnt match anything');
-  //}
+//chrome.webRequest.onCompleted.addListener(function(details) {
+  //console.debug('web request: ' + details.url);
+  //sendMessageToContentScript('request');
+
+//},
+//{ urls: [pt('*')] },
+//[]);
+
+function sendHeatmapForUrl(url) {
+  var opts = heatmapOptionsForUrl(url);
+
+  if (opts) {
+    getHeatmap(opts, function(data) {
+      console.debug('heatmap: ' + opts.filter);
+      sendMessageToContentScript({hm:data, who: opts.filter});
+    });
+  }
+  else {
+    console.error('path didnt match anything');
+  }
+}
+
+chrome.webNavigation.onHistoryStateUpdated.addListener(function(fun) {
+  console.debug('onHistoryStateUpdated -> ' + fun.url);
+  sendHeatmapForUrl(fun.url);
 },
-{ urls: [pt('*')] },
+{ url: [{ hostEquals: 'www.phishtracks.com' }]},
 []);
 
-//$(function() {
-  //console.log('freddy');
-//});
+chrome.webNavigation.onCompleted.addListener(function(fun) {
+  console.debug('onCompleted -> ' + fun.url);
+  sendHeatmapForUrl(fun.url);
+},
+{ url: [{ hostEquals: 'www.phishtracks.com' }]},
+[]);
 
 function buildHeatmapQuery(entity, filter) {
-  return {
+  var q = {
     'entity':    entity,
-    'filter':    filter,
     'timeframe': 'auto',
     'timezone':  (new Date()).getTimezoneOffset() / -60
   };
+  if (filter !== null) {
+    q.filter = filter;
+  }
+  return q;
 }
 
 function getHeatmap(options, callback) {
@@ -119,33 +111,3 @@ function getHeatmap(options, callback) {
   var query = buildHeatmapQuery(options.entity, options.filter);
   PhishTracksStats.getHeatmap(query, callback);
 }
-
-chrome.runtime.onConnect.addListener(function(port) {
-  console.assert(port.name == "the_port");
-
-  port.onMessage.addListener(function(msg) {
-    console.debug(msg);
-    if (msg.status == "ready") {
-      var opts = heatmapOptionsForUrl(msg.url);
-      getHeatmap(opts, function(data) {
-        //if (PhishTracksBuddy.ContentScript.ready) {
-          console.debug('CS is ready right away');
-          getHeatmap(opts, function(data) {
-            port.postMessage(data);
-          });
-        //}
-        //else {
-          //console.debug('CS not ready, storing heatmap for later');
-          //PhishTracksBuddy.lastHeatmap = data;
-        //}
-      });
-    }
-      //port.postMessage({question: "Who's there?"});
-    //else if (msg.answer == "Madame")
-      //port.postMessage({question: "Madame who?"});
-    //else if (msg.answer == "Madame... Bovary") {
-      //console.debug('wtf');
-      //port.postMessage({question: "I don't get it."});
-    //}
-  });
-});

@@ -15,14 +15,14 @@
 
   "permissions": [
     "webRequest",
-    "http://phish.in/",
+    "webNavigation",
     "http://www.phishtracks.com/",
     "https://www.phishtrackstats.com/"
   ],
 
   "content_scripts": [
     {
-      "run_at": "document_idle",
+      "run_at": "document_start",
       "matches": ["http://www.phishtracks.com/*"],
       "js": [
         "javascript/jquery-2.1.1.min.js",

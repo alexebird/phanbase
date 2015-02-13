@@ -1,9 +1,7 @@
-var port = chrome.runtime.connect({name: "the_port"});
+//var port = chrome.runtime.connect({name: "the_port"});
 
 var entityFns = {
   show: function (heatmap) {
-    console.debug(heatmap);
-
     $('.songs > li:not(.sectionTitle) .pt-buddy').remove();
     $('.songs > li:not(.sectionTitle) > .songInfo').before('<div class="pt-buddy"><div></div></div>');
 
@@ -18,8 +16,6 @@ var entityFns = {
     });
   },
   year: function(heatmap) {
-    console.debug(heatmap);
-
     $('.showsByYear > li > a > .pt-buddy').remove();
     $('.showsByYear > li > a > span').before('<div class="pt-buddy"><div></div></div>');
 
@@ -42,31 +38,24 @@ function normalize(val) {
 }
 
 $(document).ready(function() {
-  console.debug('ready');
-  //chrome.runtime.sendMessage({ status: 'ready' });
-  port.postMessage({status: 'ready', url: window.location.pathname});
+  console.debug('document ready');
+  //chrome.runtime.sendMessage('ready');
+  //port.postMessage({status: 'ready', url: window.location.pathname});
+  if (lastHeatmap) {
+    console.debug('already have heatmap');
+    entityFns[lastHeatmap.entity](lastHeatmap.heatmap);
+  }
+  else {
+    console.debug('still waiting');
+  }
 });
 
-//$(window).load(function() {
-  //console.debug('loaded');
-  //chrome.runtime.sendMessage({ status: 'loaded' });
-//});
+var lastHeatmap = null;
 
-//chrome.runtime.onMessage.addListener(function(msg, sender, sendResp) {
-  //if (msg.kind == 'ping') {
-    //chrome.runtime.sendMessage({ status: 'pong', data: (document.readyState === 'complete') });
-  //}
-  //else if (msg.kind == 'heatmap') {
-    //entityFns[msg.data.entity](msg.heatmap);
-  //}
-//});
-
-//port.postMessage({joke: "Knock knock"});
-port.onMessage.addListener(function(data) {
-  console.debug(data);
-  entityFns[data.entity](data.heatmap);
-  //if (msg.question == "Who's there?")
-    //port.postMessage({answer: "Madame"});
-  //else if (msg.question == "Madame who?")
-    //port.postMessage({answer: "Madame... Bovary"});
+chrome.runtime.onMessage.addListener(function(msg, sender, sendResp) {
+  var heatmap = msg.hm;
+  lastHeatmap = heatmap;
+  console.debug('from background: ' + msg.who);
+  console.debug(heatmap);
+  entityFns[heatmap.entity](heatmap.heatmap);
 });
