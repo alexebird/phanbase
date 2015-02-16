@@ -29,11 +29,21 @@ var entityFns = {
     });
   },
   years: function(heatmap) {
+    $('.pageList > li[class!="sectionTitle"] .pt-buddy').remove();
+    $('.pageList > li[class!="sectionTitle"] > a > span').before('<div class="pt-buddy"><div></div></div>');
 
+    $.each(heatmap, function(slug) {
+      var val = normalize(heatmap[slug].value);
+      $('.pageList > li[class!="sectionTitle"] span:contains("' + slug + '")')
+        .first()
+        .closest('li')
+        .find('.pt-buddy > div')
+        .css('height', '' + val + '%');
+    });
   }
 };
 
-function normalize(val) {
+function normalize(val, max) {
   return (1 - parseFloat(val)) * 100.0;
 }
 

@@ -1,7 +1,7 @@
 .pt-buddy {
   background-color: #00805F;
-  float: left ;
-  width: 10px;
+  float: left;
+  width: 0.25em;
   height: auto;
   position: absolute;
   top: 5px;
@@ -16,6 +16,6 @@
   position: relative;
 }
 
-.songInfo, .showsByYear > li > a > span {
-  margin-left: 0.5em;
+.songInfo, li > a > span {
+  margin-left: 0.25em;
 }
