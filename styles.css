@@ -1,7 +1,7 @@
 .pt-buddy {
-  background-color: #00805F;
+  background-color: #db5705;
   float: left;
-  width: 0.25em;
+  width: 0.5em;
   height: auto;
   position: absolute;
   top: 5px;
@@ -10,7 +10,8 @@
 }
 
 .pt-buddy > div {
-  background-color: rgb(204, 241, 230);
+  /*background-color: rgb(204, 241, 230);*/
+  background-color: #425f77; /* phishtracks track duration */
   width: 100%;
   height: 100%;
   position: relative;

@@ -1,2 +1,6 @@
 *.swp
 secrets.js
+secrets_dev.js
+.DS_Store
+/out/
+*.zip

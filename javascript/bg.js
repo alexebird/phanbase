@@ -1,17 +1,8 @@
 PhishTracksStats.setup({
   testMode: true,
   auth: secrets.apiBasicAuth,
-  //urlBase: secrets.urlBase || 'https://www.phishtrackstats.com'
-  urlBase: 'https://www.phishtrackstats.com'
+  urlBase: secrets.urlBase
 });
-
-//var PhishTracksBuddy = {
-  //lastHeatmap: null,
-
-  //ContentScript: {
-    //ready: false
-  //}
-//};
 
 var PT = 'http://www.phishtracks.com';
 
@@ -41,7 +32,7 @@ function heatmapOptionsForUrl(url) {
     };
   }
   else if (m = matchPt(url, /(?:\/shows\/(\d{4})$)|(?:\/api\/v1\/shows\?year=(\d{4})$)/)) {
-    console.debug(m);
+    //console.debug(m);
     return {
       filter: m[1] || m[2],
       entity: 'year'
@@ -71,7 +62,7 @@ function sendHeatmapForUrl(url) {
 
   if (opts) {
     getHeatmap(opts, function(data) {
-      console.debug('heatmap: ' + opts.filter);
+      //console.debug('heatmap: ' + opts.filter);
       sendMessageToContentScript({hm:data, who: opts.filter});
     });
   }
@@ -81,14 +72,14 @@ function sendHeatmapForUrl(url) {
 }
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(function(fun) {
-  console.debug('onHistoryStateUpdated -> ' + fun.url);
+  //console.debug('onHistoryStateUpdated -> ' + fun.url);
   sendHeatmapForUrl(fun.url);
 },
 { url: [{ hostEquals: 'www.phishtracks.com' }]},
 []);
 
 chrome.webNavigation.onCompleted.addListener(function(fun) {
-  console.debug('onCompleted -> ' + fun.url);
+  //console.debug('onCompleted -> ' + fun.url);
   sendHeatmapForUrl(fun.url);
 },
 { url: [{ hostEquals: 'www.phishtracks.com' }]},
@@ -107,7 +98,7 @@ function buildHeatmapQuery(entity, filter) {
 }
 
 function getHeatmap(options, callback) {
-  console.log('heatmap: entity=' + options.entity + ' filter=' + options.filter);
+  //console.log('heatmap: entity=' + options.entity + ' filter=' + options.filter);
   var query = buildHeatmapQuery(options.entity, options.filter);
   PhishTracksStats.getHeatmap(query, callback);
 }
