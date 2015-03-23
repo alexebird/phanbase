@@ -5,14 +5,26 @@ var entityFns = {
     $('.songs > li:not(.sectionTitle) .pt-buddy').remove();
     $('.songs > li:not(.sectionTitle) > .songInfo').before('<div class="pt-buddy"><div></div></div>');
 
-    $.each(heatmap, function(slug) {
-      var val = normalize(heatmap[slug].value);
-      //console.log('' + i + ' -> ' + val);
-      $('.songs .songTitle > a[href$="/' + slug + '"]')
-        .first()
-        .closest('li')
-        .find('.pt-buddy > div')
-        .css('height', '' + val + '%');
+    //$.each(heatmap, function(slug, val) {
+      //val = normalize(val);
+      ////console.log('' + i + ' -> ' + val);
+      //var trackAnchor = findMatchingPhishTracksTrack($('.songs .songTitle > a'), slug);
+      //if (trackAnchor === null) {
+        //console.error("couldn't find slug from heatmap in page");
+      //}
+      //else {
+        //$(trackAnchor).first().closest('li').find('.pt-buddy > div').css('height', '' + val + '%');
+      //}
+    //});
+
+    normHeatmap = remapHeatmapSlugsForPhishTracks(heatmap);
+
+    $('.songs .songTitle > a').each(function(index, el) {
+      var ptSlug = $(el).attr('href').split('/')[3];
+      var ptNormSlug = normalizeSlugForPhishTracks(ptSlug);
+      var val = normHeatmap[ptNormSlug].value;
+      val = normalize(val);
+      $(el).first().closest('li').find('.pt-buddy > div').css('height', '' + val + '%');
     });
   },
   year: function(heatmap) {
@@ -50,8 +62,38 @@ var entityFns = {
   }
 };
 
+//function findMatchingPhishTracksTrack(anchors, hmSlug) {
+  //var anch = null;
+  //anchors.each(function(index, el) {
+    //var ptSlug = $(el).attr('href').split('/')[3];
+    //var ptNormSlug = normalizeSlugForPhishTracks(ptSlug);
+    //var hmNormSlug = normalizeSlugForPhishTracks(hmSlug);
+    //console.log('looking for: ' + hmSlug + ' -> ' + hmNormSlug);
+    //console.log('encountered: ' + ptSlug + ' -> ' + ptNormSlug);
+    //if (ptNormSlug === hmNormSlug) {
+      //if (anch === null) {
+        //anch = el;
+      //}
+    //}
+  //});
+  //return anch;
+//}
+
 function normalize(val, max) {
   return (1 - parseFloat(val)) * 100.0;
+}
+
+function remapHeatmapSlugsForPhishTracks(hm) {
+  var newHm = {};
+  $.each(hm, function(slug, value) {
+    var newSlug = normalizeSlugForPhishTracks(slug);
+    newHm[newSlug] = value;
+  });
+  return newHm;
+}
+
+function normalizeSlugForPhishTracks(slug) {
+  return slug.replace(/-+/g, '');
 }
 
 $(document).ready(function() {

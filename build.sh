@@ -3,6 +3,8 @@
 OUT="${1:-out}"
 IN='.'
 
+#set -vx
+
 mkdir -p "./${OUT}"
 
 cp -r "${IN}/icons" "${OUT}"
