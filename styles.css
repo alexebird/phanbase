@@ -1,4 +1,4 @@
-.french {
+.phanbase {
   background-color: #db5705;
   float: left;
   width: 0.5em;
@@ -9,7 +9,7 @@
   bottom: 5px;
 }
 
-.french > div {
+.phanbase > div {
   background-color: #425f77; /* phishtracks track duration */
   width: 100%;
   height: 100%;

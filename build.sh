@@ -7,7 +7,7 @@ IN='.'
 
 mkdir -p "./${OUT}"
 VERSION=$(cat "${IN}/manifest.json" | grep \"version\" | cut -f4 -d' ' | tr -d \",)
-ZIP="french-${VERSION}.zip" 
+ZIP="phanbase-${VERSION}.zip"
 
 cp -r "${IN}/icons" "${OUT}"
 cp -r "${IN}/javascript" "${OUT}"

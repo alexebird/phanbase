@@ -1,7 +1,7 @@
 var entityFns = {
   show: function (heatmap) {
-    $('.songs > li:not(.sectionTitle) .french').remove();
-    $('.songs > li:not(.sectionTitle) > .songInfo').before('<div class="french"><div></div></div>');
+    $('.songs > li:not(.sectionTitle) .phanbase').remove();
+    $('.songs > li:not(.sectionTitle) > .songInfo').before('<div class="phanbase"><div></div></div>');
 
     normHeatmap = remapHeatmapSlugsForPhishTracks(heatmap);
 
@@ -10,29 +10,29 @@ var entityFns = {
       var ptNormSlug = normalizeSlugForPhishTracks(ptSlug);
       var val = (normHeatmap[ptSlug] || normHeatmap[ptNormSlug]).value;
       val = normalize(val);
-      $(el).first().closest('li').find('.french > div').css('height', '' + val + '%');
+      $(el).first().closest('li').find('.phanbase > div').css('height', '' + val + '%');
     });
   },
   year: function(heatmap) {
-    $('.showsByYear > li > a > .french').remove();
-    $('.showsByYear > li > a > span').before('<div class="french"><div></div></div>');
+    $('.showsByYear > li > a > .phanbase').remove();
+    $('.showsByYear > li > a > span').before('<div class="phanbase"><div></div></div>');
 
     $.each(heatmap, function(slug) {
       var val = normalize(heatmap[slug].value);
       $('.showsByYear > li > a[href$="/' + slug + '"]')
         .first()
         .closest('li')
-        .find('.french > div')
+        .find('.phanbase > div')
         .css('height', '' + val + '%');
     });
   },
   years: function(heatmap) {
-    $('.pageList > li[class!="sectionTitle"] .french').remove();
+    $('.pageList > li[class!="sectionTitle"] .phanbase').remove();
     $('.pageList > li[class!="sectionTitle"] > a > span')
       .filter(function(i, e) {
         return $(e).text().match(/(?:^\d{4}$)|(?:^\d{2}-\d{2}$)/);
       })
-      .before('<div class="french"><div></div></div>');
+      .before('<div class="phanbase"><div></div></div>');
 
     $.each(heatmap, function(slug) {
       var val = normalize(heatmap[slug].value);
@@ -42,7 +42,7 @@ var entityFns = {
       $('.pageList > li[class!="sectionTitle"] span:contains("' + slug + '")')
         .first()
         .closest('li')
-        .find('.french > div')
+        .find('.phanbase > div')
         .css('height', '' + val + '%');
     });
   }
